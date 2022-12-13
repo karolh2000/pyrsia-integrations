@@ -9,7 +9,6 @@ export function activate(context: vscode.ExtensionContext) {
 	const nodeProvider = new NodeProvider();
 	const provider = new NodeViewProvider(context.extensionUri, nodeProvider);
 
-	// Register the provider for a Webview View
 	const nodeViewDisposable = vscode.window.registerWebviewViewProvider(
 		NodeViewProvider.viewType,
 		provider
@@ -28,6 +27,5 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(startNode, stopNode);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
 
