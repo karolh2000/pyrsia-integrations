@@ -78,6 +78,8 @@
     "@vscode/test-electron": "^2.2.0"
   },
   "dependencies": {
-    "@vscode/webview-ui-toolkit": "^1.0.0"
+    "@vscode/webview-ui-toolkit": "^1.2.0",
+    "axios": "^1.2.1",
+    "lodash":"^4.17.21"
   }
 }

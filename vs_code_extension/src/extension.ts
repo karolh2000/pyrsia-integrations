@@ -14,17 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
 		provider
 	);
 	
-	let startNode = vscode.commands.registerCommand('pyrsia.startNode', () => {
-		nodeProvider.start();
-		
+	// let startNode = vscode.commands.registerCommand('pyrsia.isNodeHealthy', () => {
+	// 	nodeProvider.isNodeHealthy;
+	// });
 
-	});
+	// let stopNode = vscode.commands.registerCommand('pyrsia.stopNode', () => {
+	// 	nodeProvider.stop();
+	// });
 
-	let stopNode = vscode.commands.registerCommand('pyrsia.stopNode', () => {
-		nodeProvider.stop();
-	});
-
-	context.subscriptions.push(startNode, stopNode);
+	// context.subscriptions.push(startNode, stopNode);
 }
 
 export function deactivate() {}

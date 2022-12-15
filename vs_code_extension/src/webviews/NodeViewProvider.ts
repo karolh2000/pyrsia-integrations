@@ -7,12 +7,15 @@ import {
   WebviewViewResolveContext,
 } from "vscode";
 import { NodeProvider } from "../nodeProvider";
-import { getUri } from "../utilities/getUri";
+import { getUri } from "../utilities/util";
 
 export class NodeViewProvider implements WebviewViewProvider {
   public static readonly viewType = "pyrsia.node";
   private nodeProvider;
+  private _view?: WebviewView;
 
+
+  
   constructor(private readonly _extensionUri: Uri, nodeProvider: NodeProvider) {
     this.nodeProvider = nodeProvider;
   }
@@ -22,6 +25,7 @@ export class NodeViewProvider implements WebviewViewProvider {
     context: WebviewViewResolveContext,
     _token: CancellationToken
   ) {
+    this._view = webviewView;
     // Allow scripts in the webview
     webviewView.webview.options = {
       enableScripts: true,
@@ -58,24 +62,72 @@ export class NodeViewProvider implements WebviewViewProvider {
 					<title>Node</title>
 				</head>
 				<body>
-          <section id="search-container"> 
-          </section>
-          <vscode-button id="node-button">Start Node</vscode-button>
+          <div id="node-container">
+            <div id="node-connected">
+              <div> 🟢 Connected to Pyrsia node</div>
+            </div>
+            <div id="node-disconnected">
+              <p> 🔴 Faild to connect to Pyrsia node</p>
+              <p><a title="Pyrsia help and troubleshooting..." href="https://pyrsia.io/docs/tutorials/quick-installation/">Pyrsia help and troubleshooting...</a></p>
+              <button id="node-button-connect">Refresh</button>
+              </div>
+            <p></p>
+            <table>
+            <tbody>
+            <tr>
+            <td >Hostname:</td>
+            <td >&nbsp;</td>
+            </tr>
+            <tr>
+            <td >Port:</td>
+            <td >&nbsp;</td>
+            </tr>
+            <tr>
+            <td >&nbsp;</td>
+            <td >&nbsp;</td>
+            </tr>
+            <tr>
+            <td >&nbsp;</td>
+            <td >&nbsp;</td>
+            </tr>
+            <tr>
+            <td >&nbsp;</td>
+            <td >&nbsp;</td>
+            </tr>
+            </tbody>
+            </table>
+          </div>
 				</body>
 			</html>
 		`;
   }
 
-  private _setWebviewMessageListener(webviewView: WebviewView) {
-    webviewView.webview.onDidReceiveMessage((message) => {
+  private  _setWebviewMessageListener(webviewView: WebviewView) {
+    webviewView.webview.onDidReceiveMessage(async (message) => {
       const command = message.command;
-
       switch (command) {
-        case "node-start":
-          this.nodeProvider.start();
+        case "node-updatate-view":
+          let connected: boolean = await this.nodeProvider.isNodeHealthy();
+          if (connected) {
+            this.connected();
+          } else {
+            this.disconnected();
+          }
           break;
       }
     });
+  }
+
+  private connected() {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'node-connected' });
+    }
+  }
+
+  private disconnected() {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'node-disconnected' });
+    }
   }
 
 }
