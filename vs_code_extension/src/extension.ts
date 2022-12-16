@@ -9,10 +9,11 @@ export function activate(context: vscode.ExtensionContext) {
 	const nodeProvider = new NodeProvider();
 	const provider = new NodeViewProvider(context.extensionUri, nodeProvider);
 
-	const nodeViewDisposable = vscode.window.registerWebviewViewProvider(
+	vscode.window.registerWebviewViewProvider(
 		NodeViewProvider.viewType,
 		provider
 	);
+
 	
 	// let startNode = vscode.commands.registerCommand('pyrsia.isNodeHealthy', () => {
 	// 	nodeProvider.isNodeHealthy;

@@ -27,6 +27,9 @@ window.addEventListener('message', event => {
         {
           document.getElementById("node-connected").style.display = "block";
           document.getElementById("node-disconnected").style.display = "none";
+          document.getElementById("node-peer-count").innerHTML = message.nodeStatus.peers_count || "0";
+          // document.getElementById("node-peer-id").innerHTML = message.nodeStatus.peer_id || "";
+          // document.getElementById("node-peer-addresses").innerHTML = message.nodeStatus.peer_addrs || "";
           break;
         }
   }

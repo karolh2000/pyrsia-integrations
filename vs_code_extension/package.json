@@ -29,7 +29,6 @@
           "id": "pyrsia.node",
           "name": "Node",
           "type": "webview"
-
         },
         {
           "id": "pyrsia.config",

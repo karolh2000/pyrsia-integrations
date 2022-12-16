@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // TODO This should be obtained from the pyrsia node config
-function getNodeUrl() : String {
-    return "http://localhost";
+export function getNodeUrl() : String {
+    return `http://localhost:${getNodePort()}`;
 }
 
 // TODO This should be obtained from the pyrsia node config
@@ -14,13 +14,15 @@ type PingResponse = {
     data: String[];
 };
 
+
+type StatusResponse = {
+  data: String[];
+};
+
 export async function isNodeHealty(): Promise<boolean> {
-    console.log('Ping node');
-    const nodeUrl = `${getNodeUrl()}:${getNodePort()}/status`;
-    console.log(nodeUrl);
-    
+    console.log('Check node health');
+    const nodeUrl = `${getNodeUrl()}/v2`;
     let status;    
-    
     try {
         ({ status } = await axios.get<PingResponse>(
         nodeUrl,
@@ -35,4 +37,25 @@ export async function isNodeHealty(): Promise<boolean> {
     }
 
     return status === 200;
+}
+
+export async function getStatus(): Promise<unknown> {
+  console.log('Get node status');
+  const nodeUrl = `${getNodeUrl()}/status`;  
+  let data;
+  
+  try {
+      ({ data } = await axios.get<StatusResponse>(
+      nodeUrl,
+      {
+        headers: {
+          accept: 'application/json',
+        },
+      },
+    ));
+  } catch (e) {
+      console.error(e);
+  }
+
+  return data;
 }

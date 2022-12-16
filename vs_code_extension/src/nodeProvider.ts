@@ -7,9 +7,18 @@ export class NodeProvider {
     nodeProcess: cp.ChildProcess;
     pid: number | undefined;
 
-
     async isNodeHealthy() : Promise<boolean> {
         return await client.isNodeHealty();
+    }
+
+    getHostname() : String {
+        return client.getNodeUrl();
+    }
+
+    async getStatus() : Promise<unknown> {
+        let nodeStatus = await client.getStatus();
+        
+        return nodeStatus;
     }
         
     // async start() {

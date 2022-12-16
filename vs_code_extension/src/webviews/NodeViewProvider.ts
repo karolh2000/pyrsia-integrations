@@ -13,8 +13,6 @@ export class NodeViewProvider implements WebviewViewProvider {
   public static readonly viewType = "pyrsia.node";
   private nodeProvider;
   private _view?: WebviewView;
-
-
   
   constructor(private readonly _extensionUri: Uri, nodeProvider: NodeProvider) {
     this.nodeProvider = nodeProvider;
@@ -37,6 +35,12 @@ export class NodeViewProvider implements WebviewViewProvider {
     // Sets up an event listener to listen for messages passed from the webview view context
     // and executes code based on the message that is recieved
     this._setWebviewMessageListener(webviewView);
+
+    webviewView.onDidChangeVisibility((e) => {
+      this.updateView();
+    });
+
+    this.updateView();    
   }
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
@@ -49,6 +53,8 @@ export class NodeViewProvider implements WebviewViewProvider {
     ]);
     const mainUri = getUri(webview, extensionUri, ["src", "webview-ui", "main.js"]);
     const stylesUri = getUri(webview, extensionUri, ["src", "webview-ui", "styles.css"]);
+
+    const pyrsiaHostname = this.nodeProvider.getHostname();
 
     return /*html*/ `
 			<!DOCTYPE html>
@@ -64,38 +70,36 @@ export class NodeViewProvider implements WebviewViewProvider {
 				<body>
           <div id="node-container">
             <div id="node-connected">
-              <div> 🟢 Connected to Pyrsia node</div>
+            <div>🟢 Connected to Pyrsia node</div>
+            <hr>
+            <div>
+              <div class="dimmer">Node Hostname: <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
+              <div class="dimmer">Node Peers: <b><a href="${pyrsiaHostname}/peers"><span id="node-peer-count"></span></a></b></div>
+          </div>
+        
+            <!--
+            <div><a title="Troubleshooting..." href="https://pyrsia.io/docs/tutorials/quick-installation/"> 🌐 Help and troubleshooting...</a></div>
+            <p>Peer Count</p>
+            <p id="node-peer-count"></p>
+            <p>Peer ID</p>
+            <p id="node-peer-id"></p>
+            <p>Peer Addresses</p>
+            <p id="node-peer-addresses"></p>
+            -->
             </div>
+           
             <div id="node-disconnected">
-              <p> 🔴 Faild to connect to Pyrsia node</p>
-              <p><a title="Pyrsia help and troubleshooting..." href="https://pyrsia.io/docs/tutorials/quick-installation/">Pyrsia help and troubleshooting...</a></p>
-              <button id="node-button-connect">Refresh</button>
+              <div> 🔴 Faild to connect to Pyrsia node❗</div>
+              <hr>
+              <div class="dimmer">Node Hostname: <a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></div>
+              <div class="break"></div>
+              <div>👉 Please make sure Pyrsia is <a title="How to install pyrsia" href="https://pyrsia.io/docs/tutorials/quick-installation/"> installed</a>, 
+                <a title="How to start pyrsia node" href="https://pyrsia.io/docs/tutorials/quick-installation/"> running</a> and <a title="Update Pyrsia configuration" href=""> configured.</a>. 👈
               </div>
-            <p></p>
-            <table>
-            <tbody>
-            <tr>
-            <td >Hostname:</td>
-            <td >&nbsp;</td>
-            </tr>
-            <tr>
-            <td >Port:</td>
-            <td >&nbsp;</td>
-            </tr>
-            <tr>
-            <td >&nbsp;</td>
-            <td >&nbsp;</td>
-            </tr>
-            <tr>
-            <td >&nbsp;</td>
-            <td >&nbsp;</td>
-            </tr>
-            <tr>
-            <td >&nbsp;</td>
-            <td >&nbsp;</td>
-            </tr>
-            </tbody>
-            </table>
+              <div class="break"></div>
+              <button id="node-button-connect">Refresh</button>
+            </div>
+            
           </div>
 				</body>
 			</html>
@@ -106,21 +110,22 @@ export class NodeViewProvider implements WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (message) => {
       const command = message.command;
       switch (command) {
-        case "node-updatate-view":
-          let connected: boolean = await this.nodeProvider.isNodeHealthy();
-          if (connected) {
-            this.connected();
-          } else {
-            this.disconnected();
-          }
-          break;
+        case "node-updatate-view": {
+          this.updateView();
+        }
       }
     });
   }
 
   private connected() {
-    if (this._view) {
-      this._view.webview.postMessage({ type: 'node-connected' });
+    const view = this._view;
+    if (view) {
+      let nodeStatus: unknown;
+      this.nodeProvider.getStatus().then((data) => {
+        nodeStatus = data;
+      }).finally(() => {
+        view.webview.postMessage({ type: 'node-connected', nodeStatus});
+      });
     }
   }
 
@@ -128,6 +133,19 @@ export class NodeViewProvider implements WebviewViewProvider {
     if (this._view) {
       this._view.webview.postMessage({ type: 'node-disconnected' });
     }
+  }
+
+  private async updateView() {
+    let connected: boolean = await this.nodeProvider.isNodeHealthy();
+    if (connected) {
+      this.connected();
+    } else {
+      this.disconnected();
+    }
+  }
+
+  private updateNodeStatus() {
+    
   }
 
 }

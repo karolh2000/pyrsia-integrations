@@ -4,6 +4,8 @@
     --input-padding-horizontal: 4px;
     --input-margin-vertical: 4px;
     --input-margin-horizontal: 0;
+    --marigin-break-small: 10px;
+    --marigin-break: 20px;
 }
 
 body {
@@ -53,6 +55,10 @@ button {
     outline-offset: 2px !important;
     color: var(--vscode-button-foreground);
     background: var(--vscode-button-background);
+    max-width: 300px;
+    margin:0 auto;
+    display:block;
+
 }
 
 button:hover {
@@ -95,8 +101,16 @@ textarea::placeholder {
   margin-top: 5px;
 }
 
-#node-button-connect {
-  margin-top: 0.5rem;
+/* hr {
+    margin-bottom: var(--marigin-break-small);
+} */
+
+.break {
+     margin-bottom: var(--marigin-break);
+}
+
+.dimmer {
+    color: darkgrey;
 }
 
 /* #node-container {
