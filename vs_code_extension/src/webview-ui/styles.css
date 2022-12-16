@@ -98,8 +98,7 @@ textarea::placeholder {
 }
 
 * {
-  margin: 0;
-  margin-top: 5px;
+  margin: 2;
 }
 
 /* hr {

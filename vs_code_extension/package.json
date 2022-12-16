@@ -31,7 +31,7 @@
           "type": "webview"
         },
         {
-          "id": "pyrsia.config",
+          "id": "pyrsia.node-config",
           "name": "Configuration"
         },
         {

@@ -1,19 +1,14 @@
 import * as vscode from 'vscode';
 import { NodeProvider } from './nodeProvider';
+import { NodeConfigView } from './webviews/NodeConfigView';
 import { NodeViewProvider } from './webviews/NodeViewProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 
 	console.log('Pyrsia extencion activated');
 
-	const nodeProvider = new NodeProvider();
-	const provider = new NodeViewProvider(context.extensionUri, nodeProvider);
-
-	vscode.window.registerWebviewViewProvider(
-		NodeViewProvider.viewType,
-		provider
-	);
-
+	new NodeViewProvider(context);
+	new NodeConfigView(context);
 	
 	// let startNode = vscode.commands.registerCommand('pyrsia.isNodeHealthy', () => {
 	// 	nodeProvider.isNodeHealthy;

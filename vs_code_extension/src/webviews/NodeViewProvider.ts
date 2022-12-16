@@ -1,27 +1,29 @@
-import {
-  CancellationToken,
-  Uri,
-  Webview,
-  WebviewView,
-  WebviewViewProvider,
-  WebviewViewResolveContext,
-} from "vscode";
+import * as vscode from 'vscode';
 import { NodeProvider } from "../nodeProvider";
 import { getUri } from "../utilities/util";
 
-export class NodeViewProvider implements WebviewViewProvider {
-  public static readonly viewType = "pyrsia.node";
-  private nodeProvider;
-  private _view?: WebviewView;
+export class NodeViewProvider implements vscode.WebviewViewProvider {
+  public static readonly VIEW_TYPE = "pyrsia.node";
   
-  constructor(private readonly _extensionUri: Uri, nodeProvider: NodeProvider) {
-    this.nodeProvider = nodeProvider;
+  private nodeProvider;
+  private _view?: vscode.WebviewView;
+  private _extensionUri: vscode.Uri;
+
+  constructor(private readonly context: vscode.ExtensionContext) {
+    this.nodeProvider = new NodeProvider();
+
+    vscode.window.registerWebviewViewProvider(
+      NodeViewProvider.VIEW_TYPE,
+      this,
+    );
+
+    this._extensionUri = context.extensionUri;
   }
 
   public resolveWebviewView(
-    webviewView: WebviewView,
-    context: WebviewViewResolveContext,
-    _token: CancellationToken
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
   ) {
     this._view = webviewView;
     // Allow scripts in the webview
@@ -43,7 +45,7 @@ export class NodeViewProvider implements WebviewViewProvider {
     this.updateView();    
   }
 
-  private _getWebviewContent(webview: Webview, extensionUri: Uri) {
+  private _getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri) {
     const toolkitUri = getUri(webview, extensionUri, [
       "node_modules",
       "@vscode",
@@ -70,8 +72,9 @@ export class NodeViewProvider implements WebviewViewProvider {
 				<body>
           <div id="node-container">
             <div id="node-connected">
-            <div>🟢 Connected to Pyrsia node</div>
+            <div>🟢 Connected to node</div>
             <hr>
+            <div class="break"></div>
             <div>
               <div class="dimmer">Node: <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
               <div class="dimmer">Peers: <b><a href="${pyrsiaHostname}/peers"><span id="node-peer-count"></span></a></b></div>
@@ -89,7 +92,7 @@ export class NodeViewProvider implements WebviewViewProvider {
             </div>
            
             <div id="node-disconnected">
-              <div> 🔴 Faild to connect to Pyrsia node❗</div>
+              <div>🔴 Not connected to node❗</div>
               <hr>
               <div class="dimmer">Node: <a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></div>
               <div class="break"></div>
@@ -106,7 +109,7 @@ export class NodeViewProvider implements WebviewViewProvider {
 		`;
   }
 
-  private  _setWebviewMessageListener(webviewView: WebviewView) {
+  private  _setWebviewMessageListener(webviewView: vscode.WebviewView) {
     webviewView.webview.onDidReceiveMessage(async (message) => {
       const command = message.command;
       switch (command) {
