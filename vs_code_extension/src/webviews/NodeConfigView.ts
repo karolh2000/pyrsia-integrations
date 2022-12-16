@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 export class NodeConfigView {
 
-	private static readonly VIEW_TYPE = "pyrsia.node-configuration";
+	private static readonly VIEW_TYPE = "pyrsia.node-config";
 
 	constructor(context: vscode.ExtensionContext) {
 		const view = vscode.window.createTreeView(NodeConfigView.VIEW_TYPE, { treeDataProvider: aNodeWithIdTreeDataProvider(), showCollapseAll: true });
@@ -23,25 +23,27 @@ export class NodeConfigView {
 	}
 }
 
-const tree: any = {
-	'a': {
-		'aa': {
-			'aaa': {
-				'aaaa': {
-					'aaaaa': {
-						'aaaaaa': {
+class NodeConfigTreeProvider implements vscode.TreeDataProvider<string> {
 
-						}
-					}
-				}
-			}
-		},
-		'ab': {}
-	},
-	'b': {
-		'ba': {},
-		'bb': {}
+
+	getTreeItem: (element: { key: string }) => {
+		return null;
 	}
+
+
+}
+
+class NodeTreeItem extends vscode.TreeItem {
+	constructor(lable: string, command: vscode.Command, tooltip: string) {
+		super(lable);
+		this.command = command;
+		this.tooltip = tooltip;
+	}
+}
+
+const tree: any = {
+	'Node Hostname: localhost': "localhost",
+	'Node Port: 7888': "7888"
 };
 const nodes: any = {};
 
