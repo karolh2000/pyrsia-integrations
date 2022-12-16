@@ -6,6 +6,7 @@
     --input-margin-horizontal: 0;
     --marigin-break-small: 10px;
     --marigin-break: 20px;
+    --marigin-break-large: 40px;
 }
 
 body {
@@ -106,7 +107,7 @@ textarea::placeholder {
 } */
 
 .break {
-     margin-bottom: var(--marigin-break);
+     margin-bottom: var(--marigin-break-small);
 }
 
 .dimmer {

@@ -73,8 +73,8 @@ export class NodeViewProvider implements WebviewViewProvider {
             <div>🟢 Connected to Pyrsia node</div>
             <hr>
             <div>
-              <div class="dimmer">Node Hostname: <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
-              <div class="dimmer">Node Peers: <b><a href="${pyrsiaHostname}/peers"><span id="node-peer-count"></span></a></b></div>
+              <div class="dimmer">Node: <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
+              <div class="dimmer">Peers: <b><a href="${pyrsiaHostname}/peers"><span id="node-peer-count"></span></a></b></div>
           </div>
         
             <!--
@@ -91,13 +91,13 @@ export class NodeViewProvider implements WebviewViewProvider {
             <div id="node-disconnected">
               <div> 🔴 Faild to connect to Pyrsia node❗</div>
               <hr>
-              <div class="dimmer">Node Hostname: <a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></div>
+              <div class="dimmer">Node: <a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></div>
               <div class="break"></div>
               <div>👉 Please make sure Pyrsia is <a title="How to install pyrsia" href="https://pyrsia.io/docs/tutorials/quick-installation/"> installed</a>, 
                 <a title="How to start pyrsia node" href="https://pyrsia.io/docs/tutorials/quick-installation/"> running</a> and <a title="Update Pyrsia configuration" href=""> configured.</a>. 👈
               </div>
               <div class="break"></div>
-              <button id="node-button-connect">Refresh</button>
+              <button id="node-button-connect">Retest Connection</button>
             </div>
             
           </div>
