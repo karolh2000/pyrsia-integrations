@@ -92,7 +92,7 @@ export class NodeViewProvider implements vscode.WebviewViewProvider {
             </div>
            
             <div id="node-disconnected">
-              <div>🔴 Not connected to node</div>
+              <div>🔴 Not connected to node❗</div>
               <hr>
               <div class="dimmer">Node: <a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></div>
               <div class="break"></div>
