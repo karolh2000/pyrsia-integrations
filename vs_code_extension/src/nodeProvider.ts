@@ -8,7 +8,7 @@ export class NodeProvider {
     pid: number | undefined;
 
     async isNodeHealthy() : Promise<boolean> {
-        return await client.isNodeHealty();
+        return await client.isNodeHealthy();
     }
 
     getHostname() : String {

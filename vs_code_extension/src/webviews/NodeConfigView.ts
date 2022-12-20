@@ -2,48 +2,6 @@ import * as vscode from 'vscode';
 import * as util from '../utilities/util';
 import * as client from '../utilities/client';
 
-export class NodeConfigView {
-
-	private static readonly VIEW_TYPE = "pyrsia.node-config";
-
-	constructor(context: vscode.ExtensionContext) {
-		const treeViewProvider = new NodeConfigTreeProvider();
-		const view = vscode.window.createTreeView(NodeConfigView.VIEW_TYPE, { treeDataProvider: treeViewProvider, showCollapseAll: true });
-		vscode.window.registerTreeDataProvider(NodeConfigView.VIEW_TYPE, treeViewProvider);
-
-		// setup: events
-        view.onDidChangeSelection(e => {
-            console.log(e); // breakpoint here for debug
-        });
-
-        view.onDidCollapseElement(e => {
-            console.log(e); // breakpoint here for debug
-        });
-
-        view.onDidChangeVisibility(e => {
-            console.log(e); // breakpoint here for debug
-        });
-		
-        view.onDidExpandElement(e => {
-            console.log(e); // breakpoint here for debug
-        });
-
-
-
-
-		context.subscriptions.push(view);
-
-		vscode.commands.registerCommand('pyrsia.node-config.tree.refresh', () => {
-			treeViewProvider.refresh();
-		});
-
-		view.onDidChangeVisibility(() => {
-			treeViewProvider.refresh();
-		});
-
-	}
-}
-
 enum NodeConfigProperty {
 	Hostname = "hostname",
 	Port = "port",
@@ -53,6 +11,32 @@ enum NodeConfigProperty {
 	PeersValue = "peersvalue",
 };
 
+export class NodeConfigView {
+
+	private static readonly VIEW_TYPE: string = "pyrsia.node-config"; // NO I18
+	private readonly treeViewProvider: NodeConfigTreeProvider;
+
+	constructor(context: vscode.ExtensionContext) {
+		this.treeViewProvider = new NodeConfigTreeProvider();
+		const view = vscode.window.createTreeView(NodeConfigView.VIEW_TYPE, { treeDataProvider: this.treeViewProvider, showCollapseAll: true });
+		vscode.window.registerTreeDataProvider(NodeConfigView.VIEW_TYPE, this.treeViewProvider);
+
+		context.subscriptions.push(view);
+
+		vscode.commands.registerCommand('pyrsia.node-config.tree.refresh', () => {
+			this.treeViewProvider.update();
+		});
+
+		view.onDidChangeVisibility(() => {
+			this.treeViewProvider.update();
+		});
+	}
+
+	public update() : void {
+		this.treeViewProvider.update();
+	}
+}
+
 class NodeConfigTreeProvider implements vscode.TreeDataProvider<string> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<string | undefined | null | void> = new vscode.EventEmitter<string | undefined | null | void>();
@@ -60,7 +44,7 @@ class NodeConfigTreeProvider implements vscode.TreeDataProvider<string> {
 
 	private treeItems: Map<string, NodeTreeItem>  = new Map<string, NodeTreeItem>();
 
-	async refresh() {
+	async update() {
 		for (let nodeProperty in NodeConfigProperty) { // TODO Why nodeProperty is 'string' type? Investigate
 			const treeItem = this.treeItems.get(nodeProperty.toLocaleLowerCase());
 			if (treeItem) {
@@ -173,7 +157,7 @@ class NodeTreeItem extends vscode.TreeItem {
 			},
 		},
 		[NodeConfigProperty.Peers.toLowerCase()]: {
-			name: "Peers",
+			name: "Peers Count",
 			id: "peers", // NO I18
 			root: true,
 			update: async (treeItem: NodeTreeItem) => {

@@ -10,7 +10,7 @@ function main() {
 
 function updateNode() {
   vscode.postMessage({
-    command: "node-updatate-view",
+    command: "node-update-view",
   });
 }
 
