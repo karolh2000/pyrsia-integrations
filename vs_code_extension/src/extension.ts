@@ -8,7 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Pyrsia extencion activated');
 
 	new NodeViewProvider(context);
-	new NodeConfigView(context);
+	const nodeConfigView = new NodeConfigView(context);
 	
 	// let startNode = vscode.commands.registerCommand('pyrsia.isNodeHealthy', () => {
 	// 	nodeProvider.isNodeHealthy;

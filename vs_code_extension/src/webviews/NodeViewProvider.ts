@@ -4,7 +4,7 @@ import { getUri } from "../utilities/util";
 
 export class NodeViewProvider implements vscode.WebviewViewProvider {
   public static readonly VIEW_TYPE = "pyrsia.node";
-  
+
   private nodeProvider;
   private _view?: vscode.WebviewView;
   private _extensionUri: vscode.Uri;
@@ -42,7 +42,7 @@ export class NodeViewProvider implements vscode.WebviewViewProvider {
       this.updateView();
     });
 
-    this.updateView();    
+    this.updateView();
   }
 
   private _getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri) {
@@ -59,57 +59,44 @@ export class NodeViewProvider implements vscode.WebviewViewProvider {
     const pyrsiaHostname = this.nodeProvider.getHostname();
 
     return /*html*/ `
-			<!DOCTYPE html>
-			<html lang="en">
-				<head>
-					<meta charset="UTF-8">
-					<meta name="viewport" content="width=device-width, initial-scale=1.0">
-					<script type="module" src="${toolkitUri}"></script>
-					<script type="module" src="${mainUri}"></script>
-					<link rel="stylesheet" href="${stylesUri}">
-					<title>Node</title>
-				</head>
-				<body>
-          <div id="node-container">
-            <div id="node-connected">
-            <div>🟢 Connected to node</div>
-            <hr>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="${toolkitUri}"></script>
+    <script type="module" src="${mainUri}"></script>
+    <link rel="stylesheet" href="${stylesUri}">
+    <title>Node</title>
+</head>
+
+<body>
+    <div id="node-container">
+        <div id="node-connected" none>
+            <div>🟢 Connected to <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
+        </div>
+
+        <div id="node-disconnected">
+            <div>🔴 Failed connecting to <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
             <div class="break"></div>
-            <div>
-              <div class="dimmer">Node: <b><a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></b></div>
-              <div class="dimmer">Peers: <b><a href="${pyrsiaHostname}/peers"><span id="node-peer-count"></span></a></b></div>
-          </div>
-        
-            <!--
-            <div><a title="Troubleshooting..." href="https://pyrsia.io/docs/tutorials/quick-installation/"> 🌐 Help and troubleshooting...</a></div>
-            <p>Peer Count</p>
-            <p id="node-peer-count"></p>
-            <p>Peer ID</p>
-            <p id="node-peer-id"></p>
-            <p>Peer Addresses</p>
-            <p id="node-peer-addresses"></p>
-            -->
+            <div>👉 Please make sure Pyrsia is <a title="How to install pyrsia"
+                    href="https://pyrsia.io/docs/tutorials/quick-installation/"> installed</a>,
+                <a title="How to start pyrsia node" href="https://pyrsia.io/docs/tutorials/quick-installation/">
+                    running</a> and <a title="Update Pyrsia configuration" href=""> configured.</a>. 👈
             </div>
-           
-            <div id="node-disconnected">
-              <div>🔴 Not connected to node❗</div>
-              <hr>
-              <div class="dimmer">Node: <a href="${pyrsiaHostname}/status">${pyrsiaHostname}</a></div>
-              <div class="break"></div>
-              <div>👉 Please make sure Pyrsia is <a title="How to install pyrsia" href="https://pyrsia.io/docs/tutorials/quick-installation/"> installed</a>, 
-                <a title="How to start pyrsia node" href="https://pyrsia.io/docs/tutorials/quick-installation/"> running</a> and <a title="Update Pyrsia configuration" href=""> configured.</a>. 👈
-              </div>
-              <div class="break"></div>
-              <button id="node-button-connect">Retest Connection</button>
-            </div>
-            
-          </div>
-				</body>
-			</html>
+            <div class="break"></div>
+            <button id="node-button-connect">Retest Connection</button>
+        </div>
+
+    </div>
+</body>
+
+</html>
 		`;
   }
 
-  private  _setWebviewMessageListener(webviewView: vscode.WebviewView) {
+  private _setWebviewMessageListener(webviewView: vscode.WebviewView) {
     webviewView.webview.onDidReceiveMessage(async (message) => {
       const command = message.command;
       switch (command) {
@@ -127,7 +114,7 @@ export class NodeViewProvider implements vscode.WebviewViewProvider {
       this.nodeProvider.getStatus().then((data) => {
         nodeStatus = data;
       }).finally(() => {
-        view.webview.postMessage({ type: 'node-connected', nodeStatus});
+        view.webview.postMessage({ type: 'node-connected', nodeStatus });
       });
     }
   }
@@ -146,9 +133,4 @@ export class NodeViewProvider implements vscode.WebviewViewProvider {
       this.disconnected();
     }
   }
-
-  private updateNodeStatus() {
-    
-  }
-
 }

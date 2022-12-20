@@ -1,12 +1,11 @@
 export class NodeConfig {
-	private static readonly DEFAULT_HOSTNAME = 'localhost';
-	private static readonly DEFAULT_PORT = 7888;
+	private static readonly DEFAULT_HOSTNAME = "localhost";
+	private static readonly DEFAULT_PORT = "7888";
 
 	private _hostname: string;
-	private _port: number;
-	private _peers: number;
+	private _port: string;
 
-	constructor(hostname: string = NodeConfig.DEFAULT_HOSTNAME, port: number = NodeConfig.DEFAULT_PORT) {
+	constructor(hostname: string = NodeConfig.DEFAULT_HOSTNAME, port: string = NodeConfig.DEFAULT_PORT) {
 		this._hostname = hostname;
 		this._port = port;
 	}
@@ -19,11 +18,11 @@ export class NodeConfig {
 		this._hostname = hostname;
 	}
 
-	get port(): number {
-		return this.port;
+	get port(): string {
+		return this._port;
 	}
 
-	set port(port: number) {
+	set port(port: string) {
 		this._port = port;
 	}
 }

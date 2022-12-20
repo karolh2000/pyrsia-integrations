@@ -7,7 +7,7 @@ export function getNodeUrl() : String {
 }
 
 // TODO This should be obtained from the pyrsia node config
-function getNodePort() : number {
+function getNodePort() : string {
     return util.getNodeConfig().port;
 }
 

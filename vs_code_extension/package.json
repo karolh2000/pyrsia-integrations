@@ -52,6 +52,10 @@
       {
         "command": "pyrsia.stopNode",
         "title": "Stop Pyrsia Node"
+      },
+      {
+        "command": "pyrsia.node-config.tree.refresh",
+        "title": "Refresh"
       }
     ]
   },
