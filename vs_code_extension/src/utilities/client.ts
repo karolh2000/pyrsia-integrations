@@ -1,19 +1,19 @@
-import axios from 'axios';
+import axios from "axios";
+import * as util from "./util";
 
 // TODO This should be obtained from the pyrsia node config
 export function getNodeUrl() : String {
-    return `http://localhost:${getNodePort()}`;
+    return `http://${util.getNodeConfig().hostname}:${getNodePort()}`;
 }
 
 // TODO This should be obtained from the pyrsia node config
-function getNodePort() : String {
-    return "7888";
+function getNodePort() : number {
+    return util.getNodeConfig().port;
 }
 
 type PingResponse = {
     data: String[];
 };
-
 
 type StatusResponse = {
   data: String[];
@@ -58,4 +58,10 @@ export async function getStatus(): Promise<unknown> {
   }
 
   return data;
+}
+
+export async function getPeers(): Promise<unknown> {
+  console.log('Get node peers');
+
+  return (await getStatus() as any).peers_count;
 }
